@@ -1,0 +1,14 @@
+To get chat data:
+    https://api.twitch.tv/v5/videos/{video-id}/comments?client_id={client-id}&content_offset_seconds={offset}
+
+    This returns 59 comments starting from some offset, or some time shortly before the specified offset
+
+To get VOD info:
+    https://api.twitch.tv/helix/videos?id={video-id}
+
+    Get's the VOD info - most importantly the date created (so we can sync up times)
+
+To get VOD data:
+    youtube-dl URL
+
+    This downloads the entire VOD, will need to use ffmpeg to trim videos automatically
