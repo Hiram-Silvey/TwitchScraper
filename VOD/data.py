@@ -25,7 +25,7 @@ def expand_duration(duration):
     secs = int(duration[m_idx+1:s_idx]) if s_idx != -1 else 0
     return ((hours*60)+mins)*60+secs
 
-r = requests.get('https://api.twitch.tv/helix/videos?user_id={}'.format(cfg.PUBG), headers={'Client-ID': cfg.CLIENT_ID})
+r = requests.get('https://api.twitch.tv/helix/videos?user_id={}&type={}&first={}'.format(cfg.PUBG, 'archive', 100), headers={'Client-ID': cfg.CLIENT_ID})
 
 vods = r.json()['data']
 pattern = '%Y-%m-%dT%H:%M:%SZ'
