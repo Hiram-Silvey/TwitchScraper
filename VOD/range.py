@@ -24,7 +24,7 @@ with open(args['<incsv>'], 'r') as f:
 starts.sort()
 ends.sort(reverse=True)
 
-while len(starts) > 0 and starts[-1] >= ends[-1]+min_overlap:
+while len(starts) > 0 and (starts[-1]+min_overlap)%86400 >= ends[-1]:
     next_end = ends[-1] if start_to_end[starts[-1]][1] != ends[-1] else ends[-2]
     start_gain = next_end - starts[-2]
     next_start = starts[-1] if end_to_start[ends[-1]] != starts[-1] else starts[-2]
