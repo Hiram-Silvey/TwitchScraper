@@ -3,7 +3,6 @@
 """
 
 from docopt import docopt
-from IPython import embed
 
 args = docopt(__doc__)
 
