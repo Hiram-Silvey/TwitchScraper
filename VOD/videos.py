@@ -25,7 +25,9 @@ def get_ffmpeg_time(time_in_secs):
     hours = time_in_mins/60
     return '{}:{}:{}'.format(hours, mins, secs)
 
-def download((vid, vstart, vend), (start, end, ydl)):
+def download(metadata, params):
+        vid, vstart, vend = metadata
+        start, end, ydl = params
         outfile = out_folder + vid
         ydl.params['outtmpl'] = outfile
         downloaded = ydl.download(['https://www.twitch.tv/videos/{}'.format(vid)])
