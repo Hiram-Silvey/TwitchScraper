@@ -2,9 +2,7 @@
     range.py <incsv> <outcsv> <overlap_in_minutes>
 """
 
-from IPython import embed
 import networkx as nx
-from operator import itemgetter
 from docopt import docopt
 
 args = docopt(__doc__)

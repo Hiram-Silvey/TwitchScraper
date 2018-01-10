@@ -1,5 +1,5 @@
 """Usage:
-    videos.py <videolist.csv> <output_folder>
+    videos.py [--keep-original] <videolist.csv> <output_folder>
 """
 
 import os, sys, subprocess
@@ -39,6 +39,8 @@ def download(metadata, params):
         trimmed = subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-i', outfile, '-vcodec', 'copy', '-acodec', 'copy', '-ss', get_ffmpeg_time(start-vstart), '-t', get_ffmpeg_time(end-vend), '-sn', trim_folder + vid])
         if trimmed == 0:
             print('{} successfully trimmed.'.format(vid))
+            if not args['--keep-original']:
+                os.remove(outfile)
         else:
             print('Error trimming {}, try again.'.format(vid))
 
