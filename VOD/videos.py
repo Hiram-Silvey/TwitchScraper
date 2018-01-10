@@ -27,8 +27,9 @@ def get_ffmpeg_time(time_in_secs):
 
 def download(metadata, params):
         vid, vstart, vend = metadata
-        start, end, ydl = params
+        start, end = params
         outfile = out_folder + vid
+        ydl = youtube_dl.YoutubeDL({})
         ydl.params['outtmpl'] = outfile
         downloaded = ydl.download(['https://www.twitch.tv/videos/{}'.format(vid)])
         if downloaded == 0:
@@ -41,9 +42,6 @@ def download(metadata, params):
         else:
             print('Error trimming {}, try again.'.format(vid))
 
-ydl_opts = {}
-ydl = youtube_dl.YoutubeDL(ydl_opts)
-
 with open(args['<videolist.csv>'], 'r') as f:
     start, end = f.readline().split('\t')
     vids = []
@@ -51,4 +49,4 @@ with open(args['<videolist.csv>'], 'r') as f:
         vid, vstart, vend = line.split('\t')
         vids.append((vid, vstart, vend))
     p = Pool()
-    p.map(download, vids, repeat((start, end, ydl)))
+    p.starmap(download, zip(vids, repeat((start, end))))
