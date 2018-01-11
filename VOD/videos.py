@@ -36,7 +36,10 @@ def download(metadata, params):
             print('{} successfully downloaded.'.format(vid))
         else:
             print('Error downloading {}, try again.'.format(vid))
-        trimmed = subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-i', outfile, '-vcodec', 'copy', '-acodec', 'copy', '-ss', get_ffmpeg_time(start-vstart), '-t', get_ffmpeg_time(end-vend), '-sn', trim_folder + vid])
+        duration = end-start if end-start >= 0 else 86400-start+end
+        offset_start = start-vstart if start-vstart >= 0 else 86400-start+vstart
+        offset_end = offset_start+duration
+        trimmed = subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-i', outfile, '-vcodec', 'copy', '-acodec', 'copy', '-ss', get_ffmpeg_time(offset_start), '-t', get_ffmpeg_time(offset_end), '-sn', trim_folder + vid])
         if trimmed == 0:
             print('{} successfully trimmed.'.format(vid))
             if not args['--keep-original']:
