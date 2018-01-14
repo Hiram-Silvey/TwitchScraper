@@ -23,7 +23,7 @@ def get_ffmpeg_time(time_in_secs):
     time_in_mins = time_in_secs/60
     mins = time_in_mins%60
     hours = time_in_mins/60
-    return '{}:{}:{}'.format(hours, mins, secs)
+    return '{0:02}:{0:02}:{0:02}'.format(hours, mins, secs)
 
 def download(metadata, params):
         vid, vstart, vend = metadata
@@ -38,9 +38,8 @@ def download(metadata, params):
             print('Error downloading {}, try again.'.format(vid))
         duration = end-start if end-start >= 0 else 86400-start+end
         offset_start = start-vstart if start-vstart >= 0 else 86400-start+vstart
-        offset_end = offset_start+duration
-        trimmed = subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-i', outfile, '-vcodec', 'copy', '-acodec', 'copy', '-ss', get_ffmpeg_time(offset_start), '-t', get_ffmpeg_time(offset_end), '-sn', trim_folder + vid])
-        if trimmed == 0:
+        trimmed = subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-i', outfile, '-vcodec', 'copy', '-acodec', 'copy', '-ss', get_ffmpeg_time(offset_start), '-t', get_ffmpeg_time(duration), '-sn', trim_folder + vid])
+        if trimmed.returncode == 0:
             print('{} successfully trimmed.'.format(vid))
             if not args['--keep-original']:
                 os.remove(outfile)
