@@ -2,9 +2,7 @@
     range.py <incsv> <outcsv> <overlap_in_minutes>
 """
 
-from IPython import embed
 import networkx as nx
-from operator import itemgetter
 from docopt import docopt
 
 args = docopt(__doc__)
@@ -43,6 +41,26 @@ def is_overlap(node_a, node_b):
         return True
     return False
 
+def get_overlap(nodes):
+    if len(nodes) == 0:
+        return (None, None)
+    vid, start, end = nodes[0]
+    for node in nodes[1:]:
+        vid, vstart, vend = node
+        update_start = False
+        update_end = False
+        if end - start < 0 and vend - vstart > 0 and vstart < end:
+            update_start = True
+        elif vstart > start:
+            update_start = True
+        if end - start < 0 and vend - vstart > 0 and vend > start:
+            update_end = True
+        elif vend < end:
+            update_end = True
+        start = vstart if update_start else start
+        end = vend if update_end else end
+    return (start, end)
+
 with open(args['<incsv>'], 'r') as f:
     for line in f:
         vid, start, end = map(int, line.split('\t'))
@@ -54,15 +72,16 @@ with open(args['<incsv>'], 'r') as f:
                 G.add_edge(node, curr_node)
 
 max_len = 0
-best = None
+best_clique = None
 for clique in nx.find_cliques(G):
     clique_len = len(clique)
     if clique_len > max_len:
         max_len = clique_len
-        best = clique
+        best_clique = clique
 
-if best is not None:
+if best_clique is not None:
+    start, end = get_overlap(best_clique)
     with open(args['<outcsv>'], 'w+') as f:
-        #f.write('{}\t{}\n'.format(start, end))
-        for (vid, vstart, vend) in best:
+        f.write('{}\t{}\n'.format(start, end))
+        for (vid, vstart, vend) in best_clique:
             f.write('{}\t{}\t{}\n'.format(vid, vstart, vend))
