@@ -18,11 +18,12 @@ def get_comments(vid_id, vstart, vend):
     found_data = 0 #flag to say if we found the chunk of 59 with the time we want
     entry_data = 0 #so we can keep track of which entry in a chunk of 59 is the start of the comments we want
     cursor = 0
-    while !found_data:
+    while not found_data:
         if cursor!=0:
             url = url+'&cursor='+str(cursor)
         r = requests.get(url)
         current_cursor = cursor
+        print(r.json()['_next'])
         cursor = r.json()['_next']
         data = r.json()['comments']
         for i,x in enumerate(data):
@@ -35,7 +36,7 @@ def get_comments(vid_id, vstart, vend):
     #now that we have found the data and the entry number we need to go until we get to the end
     stop_searching = 0 #flag for when to stop getting comments
     first_data = 1 #flag for first data set we pull only needs to start at entry_data
-    while !stop_searching:
+    while  not stop_searching:
         url = url+'&cursor='+str(cursor) 
         r = requests.get(url)
         cursor = r.json()['_next']
@@ -49,11 +50,12 @@ def get_comments(vid_id, vstart, vend):
                 if i>=entry_data and line not in chat and time<=end_time:
                     chat.append(line)
                     first_data=0
-            else if line not in chat and time<=end_time:
+            elif line not in chat and time<=end_time:
                 chat.append(line)
-            else if time>end_time:
+            elif time>end_time:
                 stop_searching=1
                 break
+    print("test")
 
    
 
